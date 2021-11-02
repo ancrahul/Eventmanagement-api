@@ -50,6 +50,7 @@ class JoinEventSerializer(serializers.ModelSerializer):
         event_obj = Events.objects.get(id = id)
         user = self.context['request'].user # get current user detail
         validated_data['username'] = user # appending current user in mode Eventsjoined.username
+        # sets eventsjoined.queue_no to event.queue_no and eventsjoined.is_queued to True if events.seat_Avail<1 and event.queue_no>=1
         if event_obj.seat_avail < 1 and event_obj.queue_no >= 1:
             validated_data['queue_no'] = event_obj.queue_no
             validated_data['is_queued'] = True

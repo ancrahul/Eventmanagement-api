@@ -126,11 +126,12 @@ class JoinEventView(viewsets.ModelViewSet):
 
     def perform_destroy(self, instance):
         events = self.get_object()
+    
+    # update eventsjoined.queue_no with decrement having same event.eventname when current object is deleted 
+        objs = EventsJoined.objects.filter(events_joined = events.events_joined).update(queue_no = F('queue_no') - 1)
 
-        objs = EventsJoined.objects.filter(events_joined = events.events_joined).update(queue_no = F('queue_no') -1)
+    #update eventsjoined.is_queued to False where event name is same and queue_no = 0 
         objs1 = EventsJoined.objects.filter(events_joined = events.events_joined,queue_no = 0).update(is_queued = False)
-        # objs2 = EventsJoined.objects.filter(queue_no =< 1 )
-        # print(objs2)
         
         return super().perform_destroy(instance)
     
