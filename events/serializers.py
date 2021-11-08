@@ -6,7 +6,7 @@ from rest_framework import serializers
 from rest_framework.fields import ReadOnlyField
 from rest_framework.generics import DestroyAPIView
 from rest_framework.response import Response
-from .models import Events, EventsJoined
+from .models import *
 from django.contrib.auth.models import User
 
 # to get only the username from the User model 
@@ -50,16 +50,26 @@ class JoinEventSerializer(serializers.ModelSerializer):
         event_obj = Events.objects.get(id = id)
         user = self.context['request'].user # get current user detail
         validated_data['username'] = user # appending current user in mode Eventsjoined.username
+
         # sets eventsjoined.queue_no to event.queue_no and eventsjoined.is_queued to True if events.seat_Avail<1 and event.queue_no>=1
         if event_obj.seat_avail < 1 and event_obj.queue_no >= 1:
             validated_data['queue_no'] = event_obj.queue_no
             validated_data['is_queued'] = True
         return super().create(validated_data)   
-
-    
-    
-
         
     class Meta: 
         model = EventsJoined
+        fields = '__all__'
+
+class UserTransactionSerailizer(serializers.ModelSerializer):
+
+    class Meta: 
+        model = UserTransaction
+        fields = '__all__'
+
+class UserWalltetSerializer(serializers.ModelSerializer):
+    wallet_username = serializers.CharField(read_only = True)
+    wallet_amount = serializers.DecimalField(max_digits=10,decimal_places=2,read_only = True)
+    class Meta:     
+        model = UserWallet
         fields = '__all__'

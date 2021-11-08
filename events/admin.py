@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Events,EventsJoined
+from .models import *
 from django.contrib.auth.models import User
 # Register your models here.
 
@@ -26,3 +26,5 @@ class EventAdmin(admin.ModelAdmin):
 # registering models here
 admin.site.register(Events,EventAdmin)
 admin.site.register(EventsJoined)
+admin.site.register(UserWallet)
+admin.site.register(UserTransaction)

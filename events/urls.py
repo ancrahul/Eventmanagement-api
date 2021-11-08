@@ -5,8 +5,12 @@ from . import views
 router  = routers.DefaultRouter()
 router.register(r'events',views.EventViewset)
 router.register(r'joined',views.JoinEventView)
+router.register(r'usertransaction',views.UserTransactionView)
+router.register(r'userwallet',views.UserWalletView)
+
 
 urlpatterns = [
     path('',include(router.urls)),
     path('api-auth/', include('rest_framework.urls',namespace='rest_framework')),
+    path('download',views.export_excel)
 ]
