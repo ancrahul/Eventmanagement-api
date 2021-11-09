@@ -1,11 +1,4 @@
-from copy import error
-from re import T
-from django.db import models
-from django.db.models import fields
 from rest_framework import serializers
-from rest_framework.fields import ReadOnlyField
-from rest_framework.generics import DestroyAPIView
-from rest_framework.response import Response
 from .models import *
 from django.contrib.auth.models import User
 
@@ -37,35 +30,42 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 
-#show all Eventsjoined field and add username as current username d
-class JoinEventSerializer(serializers.ModelSerializer):
+
+#show all BookEvent field and add username as current username d
+class BookEventSerializer(serializers.ModelSerializer):
     
     username = CreatorDetails(read_only=True)
     queue_no = serializers.IntegerField(read_only = True)
     is_queued = serializers.BooleanField(read_only=True)
-    # joining an event in Eventssjoined model and adding username detail in eventsjoined model
+
+
+    # Book an event in Eventssjoined model and adding username detail in BookEvent model
     def create(self, validated_data):
         data = self.data
         id = data['events_joined']
         event_obj = Events.objects.get(id = id)
         user = self.context['request'].user # get current user detail
-        validated_data['username'] = user # appending current user in mode Eventsjoined.username
+        validated_data['username'] = user # appending current user in mode BookEvent.username
 
-        # sets eventsjoined.queue_no to event.queue_no and eventsjoined.is_queued to True if events.seat_Avail<1 and event.queue_no>=1
+        # sets BookEvent.queue_no to event.queue_no and BookEvent.is_queued to True if events.seat_Avail<1 and event.queue_no>=1
         if event_obj.seat_avail < 1 and event_obj.queue_no >= 1:
             validated_data['queue_no'] = event_obj.queue_no
             validated_data['is_queued'] = True
         return super().create(validated_data)   
         
     class Meta: 
-        model = EventsJoined
+        model = BookEvent
         fields = '__all__'
+
+
 
 class UserTransactionSerailizer(serializers.ModelSerializer):
 
     class Meta: 
         model = UserTransaction
         fields = '__all__'
+
+
 
 class UserWalltetSerializer(serializers.ModelSerializer):
     wallet_username = serializers.CharField(read_only = True)

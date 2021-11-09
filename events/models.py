@@ -1,7 +1,6 @@
-from io import open_code
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.deletion import DO_NOTHING
+
 
 credit = 'credit'
 debit = 'debit'
@@ -26,7 +25,7 @@ class Events(models.Model):
 
 
 
-class EventsJoined(models.Model):
+class BookEvent(models.Model):
     username = models.ForeignKey(User,on_delete = models.CASCADE)
     events_joined = models.ForeignKey(Events,on_delete=models.CASCADE)
     joining_date = models.DateTimeField(auto_now_add=True)
