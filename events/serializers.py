@@ -60,7 +60,6 @@ class BookEventSerializer(serializers.ModelSerializer):
 
 
 class UserTransactionSerailizer(serializers.ModelSerializer):
-
     class Meta: 
         model = UserTransaction
         fields = '__all__'
@@ -73,3 +72,5 @@ class UserWalltetSerializer(serializers.ModelSerializer):
     class Meta:     
         model = UserWallet
         fields = '__all__'
+
+

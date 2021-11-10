@@ -1,4 +1,7 @@
 # Create your views here.
+from django.db.models.fields import DecimalField
+from django.db.models.query_utils import Q
+from django.db.models.functions import Coalesce
 from rest_framework import viewsets
 from rest_framework.response import Response
 from .serializers import EventSerializer, BookEventSerializer, UserTransactionSerailizer, UserWalltetSerializer
@@ -6,7 +9,9 @@ from .models import *
 from rest_framework.permissions import IsAuthenticated
 from .eventmanager import *
 from .transactionmanager import *
-
+from django.db.models import Sum,Value
+from rest_framework.decorators import api_view
+from .manager import *
 
 class EventViewset(viewsets.ModelViewSet):
     queryset  = Events.objects.all()
@@ -32,7 +37,7 @@ class EventViewset(viewsets.ModelViewSet):
         if update_event(self,request) == None:
             return super().update(request, *args, **kwargs)
         else:
-            raise Response(update_event(self,request))
+            return Response(update_event(self,request))
 
 
 
@@ -93,5 +98,22 @@ class UserWalletView(viewsets.ModelViewSet):
 
 
 
+        
+@api_view(http_method_names=['GET'])
+def total_cash(request):
+    return total_cash_manager(request )   
 
 
+@api_view(http_method_names=['GET'])
+def invested_most_money(request):
+    return invested_most_money_manager(request)
+    
+
+@api_view(http_method_names=['GET'])
+def seat_status(request):
+    return seat_status_manager(request)
+
+
+@api_view(http_method_names=['GET'])
+def created_most_event(request):
+    return created_most_event_manager(request)
