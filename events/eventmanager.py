@@ -21,14 +21,15 @@ def create_user_transaction(self,user,event_name,transaction_event_fees,transact
 
 def event_date_validation(request):
     data = request.data
+    eventname = data['eventname']
     event_joining_start_date = data['joining_start_date']
     event_joining_end_date = data['joining_end_date']
     event_start_date =  data['start_date']
     event_end_date = data['end_date']
     no_seats = int(data['seat_avail'])
 
+
     # date validation and available seat should be more than 0
-        
     if event_joining_start_date > event_joining_end_date:
         return 'Event joining start date must be greater than event joining end date'
     if event_joining_end_date > event_start_date:
@@ -59,7 +60,7 @@ def update_event(self,request):
 
 #######################################################################################################
 
-# Event BookEvent
+# BookEvent
 
 
 # user can join only those event which is currently between the joining start and joining end date.
@@ -114,10 +115,16 @@ def delete_booked_event(self,request):
     # filter out  data if the current user and current event is present in trasaction model
     transaction_wallet_obj = UserTransaction.objects.filter(transaction_event_name = event_obj.id,transaction_username = request.user).first()
     
-    if not Events.objects.filter(queue_no = 0, seat_avail = 0).exists():
-        event_obj.queue_no = F('queue_no') - 1 # decrement in queue_no in event model
-    else:
+    if Events.objects.filter(queue_no = 0, seat_avail = 0).exists():
+        event_obj.seat_avail = F('seat_avail') + 1 # decrement in queue_no in event model
+        event_obj.queue_no = 0
+    if Events.objects.filter(queue_no = 0, seat_avail__gt = 0).exists():
         event_obj.seat_avail = F("seat_avail") + 1 # increment in seat_avail in event model
+        event_obj.queue_no = 0
+    if Events.objects.filter(queue_no__gt = 0, seat_avail = 0).exists(): 
+        event_obj.queue_no = F("queue_no") - 1 # increment in seat_avail in event model
+        event_obj.seat_avail = 0
+
 
     # add amount to user wallet by reffering to transaction model
     user_wallet_obj.wallet_amount = F('wallet_amount') + transaction_wallet_obj.transaction_event_fees 

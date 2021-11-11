@@ -1,7 +1,4 @@
 # Create your views here.
-from django.db.models.fields import DecimalField
-from django.db.models.query_utils import Q
-from django.db.models.functions import Coalesce
 from rest_framework import viewsets
 from rest_framework.response import Response
 from .serializers import EventSerializer, BookEventSerializer, UserTransactionSerailizer, UserWalltetSerializer
@@ -9,7 +6,6 @@ from .models import *
 from rest_framework.permissions import IsAuthenticated
 from .eventmanager import *
 from .transactionmanager import *
-from django.db.models import Sum,Value
 from rest_framework.decorators import api_view
 from .manager import *
 
